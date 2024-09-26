@@ -1,0 +1,30 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+- stage: build
+  dependsOn: 
+  - compliance
+  displayName: Build
+  jobs:
+  - job: functionBuild
+    displayName: Function Build
+    steps:
+    - template: python.yml
+      parameters:
+        pythonVersion: ${{ parameters.pythonVersion }}
+      
+- stage: deploy
+  dependsOn:
+  - build
+  displayName: Deploy
+  jobs:
+  - job: functionDeploy
+    displayName: Function Deploy
+    variables:
+      version: $[stageDependencies.build.functionBuild.outputs['versionOutput.version']]
+    steps:
+    - script: echo $(version)
+      displayName: 'Print version'

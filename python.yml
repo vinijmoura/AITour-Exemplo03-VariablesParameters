@@ -1,0 +1,15 @@
+parameters:
+  - name: pythonVersion
+    type: string
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: ${{ parameters.pythonVersion }}
+    addToPath: true
+    architecture: 'x64'
+    checkLatest: true
+- script: |
+    echo "##vso[task.setvariable variable=version;isOutput=true]2.1.0"
+  name: versionOutput
+  displayName: 'Print Python version'
